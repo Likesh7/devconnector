@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
 import classnames from "classnames";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/authActions";
+import PropTypes from "prop-types";
 
 export const useFormInput = () => {
   const [value, setValue] = useState("");
@@ -23,6 +26,10 @@ const Register = props => {
 
   let [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    setErrors(props.errors);
+  }, [props.errors]);
+
   const onSubmit = e => {
     e.preventDefault();
 
@@ -33,10 +40,7 @@ const Register = props => {
       password2: password2.value
     };
 
-    axios
-      .post("/api/users/register", newUser)
-      .then(res => console.log(res.data))
-      .catch(err => setErrors((errors = err.response.data)));
+    props.registerUser(newUser, props.history);
   };
 
   return (
@@ -116,4 +120,18 @@ const Register = props => {
   );
 };
 
-export default Register;
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(Register));
