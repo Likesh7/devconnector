@@ -17,16 +17,16 @@ export default (state = initialState, action) => {
         ...state,
         loading: true
       };
-    case CLEAR_CURRENT_PROFILE:
-      return {
-        ...state,
-        profile: null
-      };
     case GET_PROFILE:
       return {
         ...state,
         profile: action.payload,
         loading: false
+      };
+    case CLEAR_CURRENT_PROFILE:
+      return {
+        ...state,
+        profile: null
       };
     default:
       return state;
